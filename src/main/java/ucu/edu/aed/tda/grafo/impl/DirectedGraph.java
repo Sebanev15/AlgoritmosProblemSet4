@@ -32,12 +32,12 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D>{
 
     @Override
     public Set<V> predecessors(Comparable<V> criterio){
-        Set <V> resultado= new HashSet<>();
+        Set<V> resultado = new HashSet<>();
 
-        for (Set<Arista<V,D>> edges : edges.values() ){
-            for(Arista<V,D> edge: edges){
-                if(edge.source().equals(criterio)){
-                    resultado.add(edge.target());
+        for (Set<Arista<V,D>> edgeSet : edges.values()){
+            for (Arista<V,D> edge : edgeSet){
+                if(edge.target().equals(criterio)){
+                    resultado.add(edge.source());
                 }
             }
         }
