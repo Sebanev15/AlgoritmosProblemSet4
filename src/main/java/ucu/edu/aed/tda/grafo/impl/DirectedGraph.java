@@ -136,12 +136,37 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D>{
     }
 
     public void vaciar() {
-        this.edges = new HashMap<>();
-        this.vertices = new ArrayList<>();
+        edges.clear();
+        vertices.clear();
     }
 
     public boolean tieneCiclos() {
+        for (V vertice:vertices){
+            if(tieneCiclosAux(vertice, new HashSet<>())){
+                return true;
+            }
+        }
         return false;
+    }
+
+    private boolean tieneCiclosAux(V vertice, Set<V> visitados){
+      //si el vertice ya esta en el camino actual
+      // se ecnontro un ciclo.
+        if(visitados.contains(vertice))
+        return true;
+      visitados.add(vertice);
+      // exploramos los vertices asyacentes
+      for(Arista<V,D> edge: edges.get(vertice)){
+        // si algun vecino conduce a un ciclo
+        //extedemos la busqueda a ese vecino
+        if(tieneCiclosAux(edge.target(), visitados)){
+          return true;
+        }
+      }
+      //terminamos de visitar el vertice 
+      // y lo sacamos del conjunto de visitados para permitir otras rutas
+      visitados.remove(vertice);
+      return false;
     }
 
     
