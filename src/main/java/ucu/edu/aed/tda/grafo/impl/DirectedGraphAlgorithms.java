@@ -72,12 +72,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
             }
             visitados.remove(actual);
             caminoActual.remove(caminoActual.size()-1);
-        }   
-        // vuelta para atras
-              
-
-
-
+        }
 
     @Override
     public <V, D> void recorridoEnProfundidad(
@@ -100,10 +95,16 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         if(actual == null || visitados.contains(actual)){
             return;
         }
+        visitados.add(actual);
+        consumer.accept(actual);
+
+        for (Edge<V,D> arista : grafo.adyacencias(criterio)) {
+            dfs(grafo, grafo.construirComparable(arista.target()), consumer, visitados);
+        }
 
     }
 
-        @Override
+    @Override
     public <V, D> void recorridoEnAmplitud(IGraph<V, D> grafo, Comparable<V> sourceCriteria, Consumer<V> consumer) {
 
     }
