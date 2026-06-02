@@ -57,8 +57,10 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     }
 
     public V buscarVertice(Comparable<V> criterio) {
-        if(vertices.contains(criterio)){
-            return vertices.get(vertices.indexOf(criterio));
+        for (V v : vertices) {
+            if (criterio.compareTo(v) == 0) {
+                return v;
+            }
         }
         return null;
     }
