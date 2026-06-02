@@ -3,11 +3,13 @@ package ucu.edu.aed.tda.grafo.impl;
 import ucu.edu.aed.tda.grafo.IDirectedGraphAlgorithms;
 import ucu.edu.aed.tda.grafo.IDirectedIGraph;
 import ucu.edu.aed.tda.grafo.model.IGraph;
+import ucu.edu.aed.tda.grafo.model.edge.Edge;
 import ucu.edu.aed.tda.grafo.model.edge.WeightedEdge;
 import ucu.edu.aed.tda.grafo.model.result.IDijkstraResult;
 import ucu.edu.aed.tda.grafo.model.result.IFloydWarshallResult;
 import ucu.edu.aed.tda.grafo.model.result.Path;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,9 +43,47 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     @Override
     public <V, D extends WeightedEdge> List<Path<V>> obtenerTodosLosCaminos(Comparable<V> source, Comparable<V> target, IGraph<V, D> grafo) {
+        List<Path<V>> caminos=new ArrayList<>();
+        V origen= grafo.buscarVertice(source);
+        V destino= grafo.buscarVertice(target);
+        if (origen==null || destino==null){
+            return caminos;
+        }
+        List<V> caminoActual=new ArrayList<>();
+        Set<V> visitados= new HashSet<>();
+        
+        obtenerTodosLosCaminosAux(source, target, grafo)
+        
         return List.of();
     }
 
+    private <V,D extends WeightedEdge> void obtenerTodosLosCaminosAux( V actual, V destino, IGraph<V,D> grafo, List<Path<V>> caminos, 
+        List<V> caminoActual, Set<V> visitados, double costoActual){
+            caminoActual.add(actual);//agrego el V actual al camino
+            visitados.add(actual); // lo marco como visitado
+
+            if(actual.equals(destino)){ // si se llego a destino se guarda el camino
+                caminos.add(new Path<>(new ArrayList<>(caminoActual), costoActual));
+            }
+            else{ // recorremos las aristas que llevan a los adyacentes
+                for(Edge<V,D> arista: grafo.adyacencias(grafo.construirComparable(actual))){
+                    V vecino=arista.target();
+                    if (!visitados.contains(vecino)){ // esto para evitar vecinos
+                        obtenerTodosLosCaminosAux(vecino, destino, grafo, caminos, caminoActual, visitados, costoActual + arista.dato().getWeight());
+                    }
+                
+                
+                
+                }   
+            
+            
+            }   
+       
+        
+        
+        }
+    }
+    
     @Override
     public <V, D> void recorridoEnProfundidad(
             IGraph<V, D> grafo,
