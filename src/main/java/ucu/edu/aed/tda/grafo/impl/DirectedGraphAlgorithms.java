@@ -3,6 +3,7 @@ package ucu.edu.aed.tda.grafo.impl;
 import ucu.edu.aed.tda.grafo.IDirectedGraphAlgorithms;
 import ucu.edu.aed.tda.grafo.IDirectedIGraph;
 import ucu.edu.aed.tda.grafo.model.IGraph;
+import ucu.edu.aed.tda.grafo.model.edge.Edge;
 import ucu.edu.aed.tda.grafo.model.edge.WeightedEdge;
 import ucu.edu.aed.tda.grafo.model.result.IDijkstraResult;
 import ucu.edu.aed.tda.grafo.model.result.IFloydWarshallResult;
@@ -64,6 +65,13 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
         if(actual == null || visitados.contains(actual)){
             return;
+        }
+
+        visitados.add(actual);
+        consumer.accept(actual);
+
+        for(Edge<V,D> adyacente :grafo.adyacencias(criterio)){
+            dfs(grafo, grafo.construirComparable(adyacente.target()), consumer, visitados);
         }
 
     }
