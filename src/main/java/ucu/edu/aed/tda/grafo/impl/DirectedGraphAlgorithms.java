@@ -101,7 +101,6 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         for (Edge<V,D> arista : grafo.adyacencias(criterio)) {
             dfs(grafo, grafo.construirComparable(arista.target()), consumer, visitados);
         }
-
     }
 
     @Override

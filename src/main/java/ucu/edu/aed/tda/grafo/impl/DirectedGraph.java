@@ -18,11 +18,16 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     @Override
     public Set <V> successors(Comparable<V> criterio){
         Set<V> resultado= new HashSet<>();
-        // Usamos hashset para ecitar repetidos y tener busquedas e inserciones
+        V source = buscarVertice(criterio);
+
+        if(source == null || !vertices.contains(source)){
+            return resultado;
+        }
+        // Usamos hashset para evitar repetidos y tener busquedas e inserciones
         // rapidas
         for (Set<Arista<V,D>> edges : edges.values() ){
             for(Arista<V,D> edge: edges){
-                if(edge.source().equals(criterio)){
+                if(edge.source().equals(source)){
                     resultado.add(edge.target());
                 }
             }
@@ -33,10 +38,15 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     @Override
     public Set<V> predecessors(Comparable<V> criterio){
         Set<V> resultado = new HashSet<>();
+        V target = buscarVertice(criterio);
+
+        if(target==null || !vertices.contains(target)){
+            return resultado;
+        }
 
         for (Set<Arista<V,D>> edgeSet : edges.values()){
             for (Arista<V,D> edge : edgeSet){
-                if(edge.target().equals(criterio)){
+                if(edge.target().equals(target)){
                     resultado.add(edge.source());
                 }
             }
@@ -46,9 +56,6 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
 
     public boolean agregarVertice(V vertex) {
         if (vertices.contains(vertex)) {
-            return false;
-        }
-        if(edges.containsKey(vertex)){
             return false;
         }
         vertices.add(vertex);
@@ -77,17 +84,20 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     }
 
     public boolean eliminarArista(Comparable<V> source, Comparable<V> target) {
-        if (!vertices.contains(source) || !vertices.contains(target)) {
+        V sourceVertice = buscarVertice(source);
+        V targetVertice = buscarVertice(target);
+        if (!vertices.contains(sourceVertice) || !vertices.contains(targetVertice)) {
             return false;
         }
-        return edges.get(source).removeIf(edge -> edge.target().equals(target));
+        return edges.get(sourceVertice).removeIf(edge -> edge.target().equals(targetVertice));
     }
 
     public boolean removerVertice(Comparable<V> criteria) {
-        if (!vertices.contains(criteria)) {
+       V vertice = buscarVertice(criteria);
+        if (!vertices.contains(vertice)) {
             return false;
         }
-        V vertex = vertices.get(vertices.indexOf(criteria));
+        V vertex = vertices.get(vertices.indexOf(vertice));
         vertices.remove(vertex);
         edges.remove(vertex);
         for (Set<Arista<V, D>> edgeSet : edges.values()) {
@@ -109,11 +119,13 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     }
 
     public boolean existeArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
-        if (!vertices.contains(sourceCriteria) || !vertices.contains(targetCriteria)) {
+        V source = buscarVertice(sourceCriteria);
+        V target = buscarVertice(targetCriteria);
+        if (!vertices.contains(source) || !vertices.contains(target)) {
             return false;
         }
-        for(Arista<V,D> edge: edges.get(sourceCriteria)){
-            if(edge.target().equals(targetCriteria)){
+        for(Arista<V,D> edge: edges.get(source)){
+            if(edge.target().equals(target)){
                 return true;
             }
         }
@@ -128,9 +140,15 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
         return new ArrayList<>(edges.get(vertice));
     }
 
+    @Override
     public Edge<V, D> obtenerArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
-        for (Arista<V,D> edge: edges.get(sourceCriteria)){
-            if(edge.target().equals(targetCriteria)){
+        V source = buscarVertice(sourceCriteria);
+        V target = buscarVertice(targetCriteria);
+        if (!vertices.contains(source) || !vertices.contains(target)) {
+            return null;
+        }
+        for (Arista<V,D> edge: edges.get(source)){
+            if(edge.target().equals(target)){
                 return edge;
             }
         }

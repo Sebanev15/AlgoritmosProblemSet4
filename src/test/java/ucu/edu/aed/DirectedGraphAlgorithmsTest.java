@@ -14,7 +14,7 @@ public class DirectedGraphAlgorithmsTest {
     DirectedGraph<String, Integer> g = new DirectedGraph<>();
     private DirectedGraphAlgorithms algorithms = new DirectedGraphAlgorithms();
     @Test
-    public void RecorridoEnProfundidadOnlyWithOneNodeTest() {
+    public void testRecorridoEnProfundidadOnlyWithOneNode() {
         List<String> resultado = new ArrayList<>();
         g.agregarVertice("A");
         algorithms.recorridoEnProfundidad(g, g.construirComparable("A"), resultado::add);
@@ -23,7 +23,7 @@ public class DirectedGraphAlgorithmsTest {
     }
 
     @Test
-    public void RecorridoEnProfundidadWithMultipleNodesTest() {
+    public void testRecorridoEnProfundidadWithMultipleNodes() {
         List<String> resultado = new ArrayList<>();
         g.agregarVertice("A");
         g.agregarVertice("B");
@@ -40,7 +40,7 @@ public class DirectedGraphAlgorithmsTest {
     }
 
     @Test
-    public void RecorridoEnProfunidadWithMultipleAristToNodeTest(){
+    public void testRecorridoEnProfunidadWithMultipleAristToNode(){
         List<String> resultado = new ArrayList<>();
         g.agregarVertice("A");
         g.agregarVertice("B");
