@@ -49,41 +49,36 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         if (origen==null || destino==null){
             return caminos;
         }
-        List<V> caminoActual=new ArrayList<>();
-        Set<V> visitados= new HashSet<>();
-        
-        obtenerTodosLosCaminosAux(source, target, grafo)
-        
-        return List.of();
+        obtenerTodosLosCaminosAux(origen, destino, grafo, caminos, new ArrayList<>(), new HashSet<>(), 0);
+        return caminos;
     }
 
     private <V,D extends WeightedEdge> void obtenerTodosLosCaminosAux( V actual, V destino, IGraph<V,D> grafo, List<Path<V>> caminos, 
         List<V> caminoActual, Set<V> visitados, double costoActual){
-            caminoActual.add(actual);//agrego el V actual al camino
-            visitados.add(actual); // lo marco como visitado
+        caminoActual.add(actual);//agrego el V actual al camino
+        visitados.add(actual); // lo marco como visitado
 
             if(actual.equals(destino)){ // si se llego a destino se guarda el camino
-                caminos.add(new Path<>(new ArrayList<>(caminoActual), costoActual));
+            caminos.add(new Path<>(new ArrayList<>(caminoActual), costoActual));
             }
             else{ // recorremos las aristas que llevan a los adyacentes
                 for(Edge<V,D> arista: grafo.adyacencias(grafo.construirComparable(actual))){
-                    V vecino=arista.target();
-                    if (!visitados.contains(vecino)){ // esto para evitar vecinos
+                V vecino=arista.target();
+                    if (!visitados.contains(vecino)){
+                        // esto para evitar vecinos
                         obtenerTodosLosCaminosAux(vecino, destino, grafo, caminos, caminoActual, visitados, costoActual + arista.dato().getWeight());
                     }
-                
-                
-                
-                }   
-            
-            
-            }   
-       
-        
-        
-        }
-    }
-    
+                }
+            }
+            visitados.remove(actual);
+            caminoActual.remove(caminoActual.size()-1);
+        }   
+        // vuelta para atras
+              
+
+
+
+
     @Override
     public <V, D> void recorridoEnProfundidad(
             IGraph<V, D> grafo,
@@ -104,13 +99,6 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
         if(actual == null || visitados.contains(actual)){
             return;
-        }
-
-        visitados.add(actual);
-        consumer.accept(actual);
-
-        for(Edge<V,D> adyacente :grafo.adyacencias(criterio)){
-            dfs(grafo, grafo.construirComparable(adyacente.target()), consumer, visitados);
         }
 
     }
