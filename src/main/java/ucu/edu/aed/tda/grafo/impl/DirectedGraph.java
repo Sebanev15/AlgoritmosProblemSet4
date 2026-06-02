@@ -6,7 +6,7 @@ import java.util.*;
 import ucu.edu.aed.tda.grafo.IDirectedIGraph;
 
 
-public class DirectedGraph <V,D> implements IDirectedIGraph <V,D>{
+public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     private List<V> vertices;
     private Map<V,Set<Arista<V,D>>> edges;
     
@@ -119,7 +119,11 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D>{
     }
 
     public List<Edge<V, D>> adyacencias(Comparable<V> verticeCriteria) {
-        return List.of();
+        V vertice = buscarVertice(verticeCriteria);
+        if (vertice == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(edges.get(vertice));
     }
 
     public Edge<V, D> obtenerArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
