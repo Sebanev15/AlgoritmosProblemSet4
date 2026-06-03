@@ -44,6 +44,8 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     }
 
+
+    // FLOYD
     @Override
     public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo) {
     List<V> vertices = new ArrayList<>(grafo.vertices());
@@ -71,7 +73,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         }
     }
 
-    // Algoritmo principal
+    // O(n3)
     for (V k : vertices) {
         for (V i : vertices) {
             for (V j : vertices) {
@@ -86,9 +88,38 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
     return new FloydWarshallResult<>(dist, next);
     }
 
+    // WARSHALL
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo) {
-        return null;
+    public static <V, D> Map<V, Map<V, Boolean>> warshall(DirectedGraph<V, D> grafo) {
+        List<V> vertices = new ArrayList<>(grafo.vertices());
+        int n = vertices.size();
+
+        Map<V, Map<V, Boolean>> alcanzable = new HashMap<>();
+
+        // Inicialización
+        for (V u : vertices) {
+            alcanzable.put(u, new HashMap<>());
+            for (V v : vertices) {
+                if (u.equals(v)) {
+                    alcanzable.get(u).put(v, true); // todo vértice alcanza a sí mismo
+                } else {
+                    alcanzable.get(u).put(v, grafo.existeArista(u, v));
+                }
+            }
+        }
+
+        // O(n3)
+        for (V k : vertices) {
+            for (V i : vertices) {
+                for (V j : vertices) {
+                    if (alcanzable.get(i).get(k) && alcanzable.get(k).get(j)) {
+                        alcanzable.get(i).put(j, true);
+                    }
+                }
+            }
+        }
+
+        return alcanzable;
     }
 
     @Override //TODO
@@ -96,7 +127,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         return null;
     }
 
-    @Override //TODO
+    @Override
     public <V, D extends WeightedEdge> double obtenerExcentricidad(IDirectedIGraph<V, D> grafo, Comparable<V> vertexCriteria) {
         return 0;
     }
