@@ -22,7 +22,25 @@ import java.util.function.Consumer;
 public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
     @Override //TODO 
     public <V, D extends WeightedEdge> IDijkstraResult<V> dijkstra(Comparable<V> source, IDirectedIGraph<V, D> grafo) {
-        return null;
+
+        if(grafo.existeVertice(source)){
+            Map<V, Double> costos = new HashMap<>();
+            Map<V, V> predecesores = new HashMap<>();
+            for(V vertice: grafo.vertices()){
+                Comparable<V> grafoComparable = grafo.construirComparable(vertice);
+                if(grafoComparable.equals(source)){
+
+                }else{
+                    if(grafo.existeArista(source, grafoComparable)){
+                        costos.put(vertice, grafo.obtenerArista(source, grafoComparable).dato().getWeight());
+                    }else{
+                        costos.put(vertice, Double.POSITIVE_INFINITY);
+                    }
+                }
+            }
+        }
+
+
     }
 
     @Override
