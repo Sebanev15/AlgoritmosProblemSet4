@@ -1,6 +1,7 @@
 package ucu.edu.aed.tda.grafo.ej3;
 
 import ucu.edu.aed.tda.grafo.impl.DirectedGraph;
+import ucu.edu.aed.tda.grafo.model.edge.WeightedEdge;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,7 +9,7 @@ import java.io.IOException;
 
 public class ejercicio3 {
 
-    public static void cargarDatos(DirectedGraph<String, Integer> grafo, String rutaAeropuertos, String rutaConexiones) {
+    public static void cargarDatos(DirectedGraph<String, WeightedEdge> grafo, String rutaAeropuertos, String rutaConexiones) {
         
         // primero carga los aeropuertos
         try (BufferedReader br = new BufferedReader(new FileReader(rutaAeropuertos))) {
@@ -36,7 +37,7 @@ public class ejercicio3 {
                 String destino = partes[1];
                 int peso = Integer.parseInt(partes[2]);
 
-                grafo.agregarArista(origen, destino, peso);
+                grafo.agregarArista(origen, destino, new WeightedEdge(peso));
             }
         }
         // me defiendo de errores en el archivo

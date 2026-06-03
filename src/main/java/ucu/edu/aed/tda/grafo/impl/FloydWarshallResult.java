@@ -18,6 +18,10 @@ public class FloydWarshallResult<V> implements IFloydWarshallResult<V> {
 
     @Override
     public List<V> getPath(V source, V target) {
+        // Si no existen los vértices en el grafo, retorna null
+        if (!siguiente.containsKey(source) || !siguiente.get(source).containsKey(target)) return null;
+        
+        // No hay camino entre source y target
         if (siguiente.get(source).get(target) == null) return Collections.emptyList();
         List<V> path = new ArrayList<>();
         path.add(source);
@@ -25,12 +29,15 @@ public class FloydWarshallResult<V> implements IFloydWarshallResult<V> {
             source = siguiente.get(source).get(target);
             path.add(source);
         }
-        path.add(target);
         return path;
     }
 
     @Override
     public double getCost(V source, V target) {
+        if (distancias.get(source).get(target) == Double.POSITIVE_INFINITY) {
+            // No hay camino entre source y target
+            return -1;
+        }
         return distancias.get(source).get(target);
     }
 

@@ -101,6 +101,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         for (V v : vertices) {
             if (u.equals(v)) {
                 dist.get(u).put(v, 0.0);
+                next.get(u).put(v, v);
             } else {
                 Edge<V, D> e = grafo.obtenerArista(u, v);
                 if (e != null) {
@@ -113,7 +114,6 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
             }
         }
     }
-
     // O(n3)
     for (V k : vertices) {
         for (V i : vertices) {
@@ -132,41 +132,50 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
     @Override
     public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo) {
         List<V> vertices = new ArrayList<>(grafo.vertices());
-        int n = vertices.size();
 
-        Map<V, Map<V, Boolean>> alcanzable = new HashMap<>();
+        Map<V, Map<V, Double>> dist = new HashMap<>();
+        Map<V, Map<V, V>> next = new HashMap<>();
 
-        // Inicialización
+        // Inicialización: distancia 0 para u==v, 1 si hay arista, INF si no hay camino directo
         for (V u : vertices) {
-            alcanzable.put(u, new HashMap<>());
+            dist.put(u, new HashMap<>());
+            next.put(u, new HashMap<>());
             for (V v : vertices) {
                 if (u.equals(v)) {
-                    alcanzable.get(u).put(v, true);
-                }
-                else {
-                    Comparable<V> compU = grafo.construirComparable(u);
-                    Comparable<V> compV = grafo.construirComparable(v);
-                    alcanzable.get(u).put(v, grafo.existeArista(compU, compV));
-                }
-            }
-        }
-
-        // O(n3)
-        for (V k : vertices) {
-            for (V i : vertices) {
-                for (V j : vertices) {
-                    if (alcanzable.get(i).get(k) && alcanzable.get(k).get(j)) {
-                        alcanzable.get(i).put(j, true);
+                    dist.get(u).put(v, 0.0);
+                    next.get(u).put(v, v);
+                } else {
+                    Edge<V, D> e = grafo.obtenerArista(u, v);
+                    if (e != null) {
+                        dist.get(u).put(v, 1.0);
+                        next.get(u).put(v, v);
+                    } else {
+                        dist.get(u).put(v, Double.POSITIVE_INFINITY);
+                        next.get(u).put(v, null);
                     }
                 }
             }
         }
-
-        return (IFloydWarshallResult<V>) alcanzable;
+        // O(n^3)
+        for (V k : vertices) {
+            for (V i : vertices) {
+                for (V j : vertices) {
+                    double dik = dist.get(i).get(k);
+                    double dkj = dist.get(k).get(j);
+                    if (dik == Double.POSITIVE_INFINITY || dkj == Double.POSITIVE_INFINITY) continue;
+                    double alt = dik + dkj;
+                    if (alt < dist.get(i).get(j)) {
+                        dist.get(i).put(j, alt);
+                        next.get(i).put(j, next.get(i).get(k));
+                    }
+                }
+            }
+        }
+        return new FloydWarshallResult<>(dist, next);
     }
 
 
-    @Override //TODO
+    @Override
     public <V, D extends WeightedEdge> V obtenerCentroGrafo(IDirectedIGraph<V, D> grafo) {
         V centro = null;
         for(V vertice: grafo.vertices()){
@@ -178,7 +187,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         return centro;
     }
 
-    @Override //TODO
+    @Override
     public <V, D extends WeightedEdge> double obtenerExcentricidad(IDirectedIGraph<V, D> grafo, Comparable<V> vertexCriteria) {
         IDijkstraResult<V> dijkstraResultado = this.dijkstra(vertexCriteria, grafo);
         double mayor = 0;
