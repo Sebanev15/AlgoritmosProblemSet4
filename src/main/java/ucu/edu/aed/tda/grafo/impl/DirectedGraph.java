@@ -50,6 +50,19 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
         return resultado;
     }
 
+    public D obtenerDatoArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
+        V source = buscarVertice(sourceCriteria);
+        V target = buscarVertice(targetCriteria);
+        if (!vertices.contains(source) || !vertices.contains(target)) {
+            return null;
+        }
+        for (Arista<V,D> edge: edges.get(source)){
+            if(edge.target().equals(target)){
+                return edge.dato();
+            }
+        }
+        return null;
+    }
     public boolean agregarVertice(V vertex) {
         if (vertices.contains(vertex)) {
             return false;
