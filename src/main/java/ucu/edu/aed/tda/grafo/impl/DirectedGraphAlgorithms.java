@@ -20,28 +20,69 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
-    @Override //TODO 
+    @Override
     public <V, D extends WeightedEdge> IDijkstraResult<V> dijkstra(Comparable<V> source, IDirectedIGraph<V, D> grafo) {
+        if (!grafo.existeVertice(source)) {
+            return null;
+        }
+        Map<V, Double> costos = new HashMap<>();
+        Map<V, V> predecesores = new HashMap<>();
+        Set<V> visitados = new HashSet<>();
 
-        if(grafo.existeVertice(source)){
-            Map<V, Double> costos = new HashMap<>();
-            Map<V, V> predecesores = new HashMap<>();
-            for(V vertice: grafo.vertices()){
-                Comparable<V> grafoComparable = grafo.construirComparable(vertice);
-                if(grafoComparable.equals(source)){
+        V origen = grafo.buscarVertice(source);
 
-                }else{
-                    if(grafo.existeArista(source, grafoComparable)){
-                        costos.put(vertice, grafo.obtenerArista(source, grafoComparable).dato().getWeight());
-                    }else{
-                        costos.put(vertice, Double.POSITIVE_INFINITY);
+        visitados.add(origen);
+
+        for(V vertice: grafo.vertices()){
+            Comparable<V> verticeComparable = grafo.construirComparable(vertice);
+
+            if(grafo.existeArista(source, verticeComparable)){
+                Edge<V,D> arista = grafo.obtenerArista(source, verticeComparable);
+                costos.put(vertice, arista.dato().getWeight());
+                predecesores.put(vertice, origen);
+            }
+            else{
+                costos.put(vertice, Double.POSITIVE_INFINITY);
+            }
+        }
+        costos.put(origen, 0.0);
+
+        while (visitados.size() < grafo.vertices().size()) {
+            V verticeMenorCosto = null;
+            double menorCosto = Double.POSITIVE_INFINITY;
+
+            for (V vertice : grafo.vertices()) {
+                if (!visitados.contains(vertice)) {
+                    Double costo = costos.getOrDefault(vertice, Double.POSITIVE_INFINITY);
+                    if (costo < menorCosto) {
+                        menorCosto = costo;
+                        verticeMenorCosto = vertice;
+                    }
+                }
+            }
+
+            if (verticeMenorCosto == null) {
+                break;
+            }
+
+            visitados.add(verticeMenorCosto);
+
+            Comparable<V> verticeMenorCostoComparable = grafo.construirComparable(verticeMenorCosto);
+            for (V vertice: grafo.vertices()) {
+                if(!visitados.contains(vertice)){
+                    Comparable<V> verticeComparable = grafo.construirComparable(vertice);
+                    if(grafo.existeArista(verticeMenorCostoComparable, verticeComparable)){
+                        Edge<V,D> arista = grafo.obtenerArista(verticeMenorCostoComparable, verticeComparable);
+                        double nuevoCosto = costos.get(verticeMenorCosto) + arista.dato().getWeight();
+                        if (nuevoCosto < costos.get(vertice)) {
+                            costos.put(vertice, nuevoCosto);
+                            predecesores.put(vertice, verticeMenorCosto);
+                        }
                     }
                 }
             }
         }
-        return null;
-
-
+        return new DijkstraResult<>(origen, costos, predecesores);
     }
 
     @Override

@@ -22,15 +22,14 @@ public class DijkstraResult<V> implements IDijkstraResult<V> {
 
     @Override
     public List<V> getPath(V otherVertex) {
-        V predecesor = predecesores.get(otherVertex);
-        List<V> resultado = new ArrayList<>();
-        if (predecesor == null) {
-           return null;
+        if(!predecesores.containsKey(otherVertex) && !origen.equals(otherVertex)){
+            return null;
         }
-        resultado.add(0, otherVertex);
-        while(predecesor!=origen){
-            resultado.add(0, predecesor);
-            predecesor=predecesores.get(predecesor);
+        List<V> resultado = new ArrayList<>();
+        V actual = otherVertex;
+        while(actual!=null && !actual.equals(origen)){
+            resultado.add(0, actual);
+            actual=predecesores.get(actual);
         }
         resultado.add(0, origen);
         return resultado;

@@ -170,6 +170,15 @@ class DirectedGraphTest {
     }
 
     @Test
+    void testPredecessorsPredecessorOfPredecessor(){
+        g.agregarArista("A", "B", 1);
+        g.agregarArista("B", "C", 1);
+        Set<String> pred = g.predecessors("C");
+        assertTrue(pred.contains("B"));
+        assertTrue(pred.size()==1);
+        assertFalse(pred.contains("A"));
+    }
+    @Test
     void testPredecessorsSinEntrantes() {
         g.agregarArista("A", "B", 1);
 
