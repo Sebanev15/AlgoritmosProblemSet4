@@ -168,12 +168,25 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     @Override //TODO
     public <V, D extends WeightedEdge> V obtenerCentroGrafo(IDirectedIGraph<V, D> grafo) {
-        return null;
+        V centro = null;
+        for(V vertice: grafo.vertices()){
+            double excentricidad = this.obtenerExcentricidad(grafo, grafo.construirComparable(vertice));
+            if (centro == null || excentricidad < this.obtenerExcentricidad(grafo, grafo.construirComparable(centro))){
+                centro = vertice;
+            }
+        }
+        return centro;
     }
 
     @Override //TODO
     public <V, D extends WeightedEdge> double obtenerExcentricidad(IDirectedIGraph<V, D> grafo, Comparable<V> vertexCriteria) {
-        return 0;
+        IDijkstraResult<V> dijkstraResultado = this.dijkstra(vertexCriteria, grafo);
+        double mayor = 0;
+        for(V vertice: grafo.vertices()){
+            double actual = dijkstraResultado.getCost(vertice);
+            mayor= Math.max(actual, mayor);
+        }
+        return mayor;
     }
 
     @Override
