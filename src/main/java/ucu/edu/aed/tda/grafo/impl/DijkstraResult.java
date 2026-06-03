@@ -27,12 +27,12 @@ public class DijkstraResult<V> implements IDijkstraResult<V> {
         if (predecesor == null) {
            return null;
         }
-        resultado.addFirst(otherVertex);
+        resultado.add(0, otherVertex);
         while(predecesor!=origen){
-            resultado.addFirst(predecesor);
+            resultado.add(0, predecesor);
             predecesor=predecesores.get(predecesor);
         }
-        resultado.addFirst(origen);
+        resultado.add(0, origen);
         return resultado;
     }
 }

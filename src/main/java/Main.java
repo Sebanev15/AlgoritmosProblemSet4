@@ -1,4 +1,5 @@
 import ucu.edu.aed.tda.grafo.ej3.ejercicio3;
+import ucu.edu.aed.tda.grafo.impl.DirectedGraph;
 
 public class Main {
     public static void main(String[] args) {

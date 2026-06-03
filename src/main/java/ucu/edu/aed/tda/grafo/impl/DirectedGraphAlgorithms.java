@@ -39,6 +39,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
                 }
             }
         }
+        return null;
 
 
     }
