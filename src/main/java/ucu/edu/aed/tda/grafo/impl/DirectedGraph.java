@@ -16,21 +16,17 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     }
 
     @Override
-    public Set <V> successors(Comparable<V> criterio){
-        Set<V> resultado= new HashSet<>();
+    public Set<V> successors(Comparable<V> criterio){
+        Set<V> resultado = new HashSet<>();
         V source = buscarVertice(criterio);
 
         if(source == null || !vertices.contains(source)){
-            return resultado;
+        return resultado;
         }
-        // Usamos hashset para evitar repetidos y tener busquedas e inserciones
-        // rapidas
-        for (Set<Arista<V,D>> edges : edges.values() ){
-            for(Arista<V,D> edge: edges){
-                if(edge.source().equals(source)){
-                    resultado.add(edge.target());
-                }
-            }
+    
+        // 'edges' ya nos da las aristas que salen de 'source' en O(1)
+        for(Arista<V,D> edge : edges.get(source)){
+            resultado.add(edge.target());
         }
         return resultado;
     }
@@ -187,24 +183,22 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
     }
 
     private boolean tieneCiclosAux(V vertice, Set<V> visitados){
-      //si el vertice ya esta en el camino actual
-      // se ecnontro un ciclo.
-        if(visitados.contains(vertice))
-        return true;
+      //si el vértice ya está en el camino actual
+      // se encontró un ciclo.
+        if(visitados.contains(vertice)) return true;
       visitados.add(vertice);
-      // exploramos los vertices asyacentes
+      // exploramos los vértices adyacentes
       for(Arista<V,D> edge: edges.get(vertice)){
-        // si algun vecino conduce a un ciclo
-        //extedemos la busqueda a ese vecino
+        // si algún vecino conduce a un ciclo
+        //extendemos la búsqueda a ese vecino
         if(tieneCiclosAux(edge.target(), visitados)){
           return true;
         }
       }
-      //terminamos de visitar el vertice 
+      //terminamos de visitar el vértice 
       // y lo sacamos del conjunto de visitados para permitir otras rutas
       visitados.remove(vertice);
       return false;
     }
-
     
 }
