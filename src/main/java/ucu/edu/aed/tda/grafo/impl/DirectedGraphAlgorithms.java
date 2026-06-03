@@ -46,7 +46,44 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     @Override
     public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo) {
-        return null;
+    List<V> vertices = new ArrayList<>(grafo.vertices());
+
+    Map<V, Map<V, Double>> dist = new HashMap<>();
+    Map<V, Map<V, V>> next = new HashMap<>();
+
+    // Inicialización
+    for (V u : vertices) {
+        dist.put(u, new HashMap<>());
+        next.put(u, new HashMap<>());
+        for (V v : vertices) {
+            if (u.equals(v)) {
+                dist.get(u).put(v, 0.0);
+            } else {
+                Edge<V, D> e = grafo.obtenerArista(u, v);
+                if (e != null) {
+                    dist.get(u).put(v, e.dato().getWeight());
+                    next.get(u).put(v, v);
+                } else {
+                    dist.get(u).put(v, Double.POSITIVE_INFINITY);
+                    next.get(u).put(v, null);
+                }
+            }
+        }
+    }
+
+    // Algoritmo principal
+    for (V k : vertices) {
+        for (V i : vertices) {
+            for (V j : vertices) {
+                double alt = dist.get(i).get(k) + dist.get(k).get(j);
+                if (alt < dist.get(i).get(j)) {
+                    dist.get(i).put(j, alt);
+                    next.get(i).put(j, next.get(i).get(k));
+                }
+            }
+        }
+    }
+    return new FloydWarshallResult<>(dist, next);
     }
 
     @Override
@@ -81,7 +118,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         caminoActual.add(actual);//agrego el V actual al camino
         visitados.add(actual); // lo marco como visitado
 
-            if(actual.equals(destino)){ // si se llego a destino se guarda el camino
+            if(actual.equals(destino)){ // si se llegó a destino se guarda el camino
             caminos.add(new Path<>(new ArrayList<>(caminoActual), costoActual));
             }
             else{ // recorremos las aristas que llevan a los adyacentes
@@ -126,7 +163,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         }
     }
 
-    @Override //No coerresponde a grafos dirigidos
+    @Override //No corresponde a grafos dirigidos
     public <V, D> void recorridoEnAmplitud(IGraph<V, D> grafo, Comparable<V> sourceCriteria, Consumer<V> consumer) {
 
     }
