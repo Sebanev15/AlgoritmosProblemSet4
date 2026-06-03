@@ -110,6 +110,39 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     @Override
     public <V, D> List<V> calcularClasificacionTopologica(IDirectedIGraph<V, D> grafo) {
-        return List.of();
+        Map<V, Integer> gradoEntrada = new HashMap<>();
+
+        for (V vertice : grafo.vertices()) {
+            gradoEntrada.put(vertice, grafo.gradoDeEntrada(grafo.construirComparable(vertice)));
+        }
+
+        Queue<V> cola = new LinkedList<>();
+
+        for (Map.Entry<V, Integer> entry : gradoEntrada.entrySet()) {
+
+            if (entry.getValue() == 0) {
+                cola.add(entry.getKey());
+            }
+        }
+
+        List<V> resultado = new ArrayList<>();
+        while (!cola.isEmpty()) {
+            V actual = cola.poll();
+            resultado.add(actual);
+            for (V sucesor : grafo.successors(grafo.construirComparable(actual))) {
+                int nuevoGrado = gradoEntrada.get(sucesor) - 1;
+                gradoEntrada.put(sucesor, nuevoGrado);
+
+                if (nuevoGrado == 0) {
+                    cola.add(sucesor);
+                }
+            }
+        }
+
+        if (resultado.size() != grafo.vertices().size()) {
+            throw new IllegalStateException("El grafo contiene un ciclo, no es posible calcular la clasificación topológica.");
+        }
+
+        return resultado;
     }
 }
