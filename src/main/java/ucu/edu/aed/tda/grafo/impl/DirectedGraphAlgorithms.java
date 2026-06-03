@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
-    @Override
+    @Override //TODO 
     public <V, D extends WeightedEdge> IDijkstraResult<V> dijkstra(Comparable<V> source, IDirectedIGraph<V, D> grafo) {
         return null;
     }
@@ -35,12 +35,12 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         return null;
     }
 
-    @Override
+    @Override //TODO
     public <V, D extends WeightedEdge> V obtenerCentroGrafo(IDirectedIGraph<V, D> grafo) {
         return null;
     }
 
-    @Override
+    @Override //TODO
     public <V, D extends WeightedEdge> double obtenerExcentricidad(IDirectedIGraph<V, D> grafo, Comparable<V> vertexCriteria) {
         return 0;
     }
@@ -107,7 +107,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         }
     }
 
-    @Override
+    @Override //No coerresponde a grafos dirigidos
     public <V, D> void recorridoEnAmplitud(IGraph<V, D> grafo, Comparable<V> sourceCriteria, Consumer<V> consumer) {
 
     }
