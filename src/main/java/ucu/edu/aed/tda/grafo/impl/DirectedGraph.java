@@ -164,8 +164,21 @@ public class DirectedGraph <V,D> implements IDirectedIGraph <V,D> {
         return null;
     }
 
-    public boolean esConexo() {
-        return false;
+    public boolean esConexo() {  // un grafo es conexo si podes ir y volver
+                                //  entre cualquier par de nodos siguiendo las direcciones de las aristas
+        int tamanio= vertices.size();
+        if (tamanio==0){
+            return false;
+        }
+        DirectedGraphAlgorithms algoritmo= new DirectedGraphAlgorithms();
+        for (V vertice: vertices){
+            List<V> nodos= new LinkedList<>();
+            algoritmo.recorridoEnProfundidad(this, this.construirComparable(vertice), nodos::add);
+            if(tamanio!= nodos.size()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void vaciar() {
