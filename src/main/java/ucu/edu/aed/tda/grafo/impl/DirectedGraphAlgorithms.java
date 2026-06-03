@@ -85,6 +85,8 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         return new DijkstraResult<>(origen, costos, predecesores);
     }
 
+
+    // FLOYD
     @Override
     public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo) {
     List<V> vertices = new ArrayList<>(grafo.vertices());
@@ -112,7 +114,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         }
     }
 
-    // Algoritmo principal
+    // O(n3)
     for (V k : vertices) {
         for (V i : vertices) {
             for (V j : vertices) {
@@ -127,9 +129,41 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
     return new FloydWarshallResult<>(dist, next);
     }
 
+    // WARSHALL
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo) {
-        return null;
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(DirectedGraph<V, D> grafo) {
+        List<V> vertices = new ArrayList<>(grafo.vertices());
+        int n = vertices.size();
+
+        Map<V, Map<V, Boolean>> alcanzable = new HashMap<>();
+
+        // Inicialización
+        for (V u : vertices) {
+            alcanzable.put(u, new HashMap<>());
+            for (V v : vertices) {
+                if (u.equals(v)) {
+                    alcanzable.get(u).put(v, true); // todo vértice alcanza a sí mismo
+                }
+                else {
+                    Comparable<V> compU = grafo.construirComparable(u);
+                    Comparable<V> compV = grafo.construirComparable(v);
+                    alcanzable.get(u).put(v, grafo.existeArista(compU, compV));
+                }
+            }
+        }
+
+        // O(n3)
+        for (V k : vertices) {
+            for (V i : vertices) {
+                for (V j : vertices) {
+                    if (alcanzable.get(i).get(k) && alcanzable.get(k).get(j)) {
+                        alcanzable.get(i).put(j, true);
+                    }
+                }
+            }
+        }
+
+        return alcanzable;
     }
 
     @Override //TODO

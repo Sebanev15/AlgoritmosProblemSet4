@@ -25,6 +25,7 @@ public class FloydWarshallResult<V> implements IFloydWarshallResult<V> {
             source = siguiente.get(source).get(target);
             path.add(source);
         }
+        path.add(target);
         return path;
     }
 
