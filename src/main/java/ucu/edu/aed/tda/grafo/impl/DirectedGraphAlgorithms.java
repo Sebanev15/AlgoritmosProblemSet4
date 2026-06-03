@@ -90,7 +90,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
 
     // WARSHALL
     @Override
-    public static <V, D> Map<V, Map<V, Boolean>> warshall(DirectedGraph<V, D> grafo) {
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(DirectedGraph<V, D> grafo) {
         List<V> vertices = new ArrayList<>(grafo.vertices());
         int n = vertices.size();
 
@@ -102,8 +102,11 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
             for (V v : vertices) {
                 if (u.equals(v)) {
                     alcanzable.get(u).put(v, true); // todo vértice alcanza a sí mismo
-                } else {
-                    alcanzable.get(u).put(v, grafo.existeArista(u, v));
+                }
+                else {
+                    Comparable<V> compU = grafo.construirComparable(u);
+                    Comparable<V> compV = grafo.construirComparable(v);
+                    alcanzable.get(u).put(v, grafo.existeArista(compU, compV));
                 }
             }
         }
@@ -127,7 +130,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
         return null;
     }
 
-    @Override
+    @Override //TODO
     public <V, D extends WeightedEdge> double obtenerExcentricidad(IDirectedIGraph<V, D> grafo, Comparable<V> vertexCriteria) {
         return 0;
     }
