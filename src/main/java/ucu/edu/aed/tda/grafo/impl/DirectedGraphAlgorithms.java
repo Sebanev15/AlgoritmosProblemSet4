@@ -129,9 +129,8 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
     return new FloydWarshallResult<>(dist, next);
     }
 
-    // WARSHALL
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(DirectedGraph<V, D> grafo) {
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo) {
         List<V> vertices = new ArrayList<>(grafo.vertices());
         int n = vertices.size();
 
@@ -142,7 +141,7 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
             alcanzable.put(u, new HashMap<>());
             for (V v : vertices) {
                 if (u.equals(v)) {
-                    alcanzable.get(u).put(v, true); // todo vértice alcanza a sí mismo
+                    alcanzable.get(u).put(v, true);
                 }
                 else {
                     Comparable<V> compU = grafo.construirComparable(u);
@@ -163,8 +162,9 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
             }
         }
 
-        return alcanzable;
+        return (IFloydWarshallResult<V>) alcanzable;
     }
+
 
     @Override //TODO
     public <V, D extends WeightedEdge> V obtenerCentroGrafo(IDirectedIGraph<V, D> grafo) {
