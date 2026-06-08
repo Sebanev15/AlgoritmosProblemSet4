@@ -65,9 +65,28 @@ public class UndirectedGraph<V,D> implements IUndirectedGraph<V,D>{
     }
 
     @Override
-    public boolean removerVertice(Comparable criteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removerVertice'");
+    public boolean removerVertice(Comparable<V> criteria) {
+        Set<V> verticesARemover= new HashSet<>();
+        Set<Edge<V,D>> aristaARemover= new HashSet<>();
+
+        for (V vertex: vertices){
+            if(criteria.compareTo(vertex)==0){
+                verticesARemover.add(vertex);
+            }
+        }
+        for(Edge<V,D> arista: aristas){
+            V org= arista.source();
+            V dst= arista.target();
+            boolean condition= verticesARemover.contains(org) || verticesARemover.contains(dst);
+            if (condition) {
+                aristaARemover.add(arista);
+            }
+            
+        }
+        boolean b1= vertices.removeAll(verticesARemover);
+        boolean b2= aristas.removeAll(aristaARemover);
+
+        return b1 || b2;
     }
 
     @Override
@@ -81,28 +100,72 @@ public class UndirectedGraph<V,D> implements IUndirectedGraph<V,D>{
     }
 
     @Override
-    public boolean existeArista(Comparable sourceCriteria, Comparable targetCriteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'existeArista'");
+    public boolean existeArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
+        for(Edge<V,D> arista:aristas){
+            V org= arista.source();
+            V dst= arista.target();
+            boolean condition= (sourceCriteria.compareTo(org)==0 && targetCriteria.compareTo(dst)==0 || (sourceCriteria.compareTo(dst)==0 && targetCriteria.compareTo(org)==0));
+            if (condition){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public Edge obtenerArista(Comparable sourceCriteria, Comparable targetCriteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'obtenerArista'");
+    public Edge<V, D> obtenerArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
+        for(Edge<V,D> arista:aristas){
+            V org= arista.source();
+            V dst= arista.target();
+            boolean condition= (sourceCriteria.compareTo(org)==0 && targetCriteria.compareTo(dst)==0 || (sourceCriteria.compareTo(dst)==0 && targetCriteria.compareTo(org)==0));
+            if (condition){
+                return arista;
+            }
+        }
+        return null;
     }
 
     @Override
-    public List adyacencias(Comparable verticeCriteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adyacencias'");
+    public List<Edge<V,D>> adyacencias(Comparable<V> verticeCriteria) {
+        List<Edge<V,D>> ady= new LinkedList<>();
+        for(Edge<V,D> arista:aristas){
+            V org= arista.source();
+            V dst= arista.target();
+            if (verticeCriteria.compareTo(org)==0 || verticeCriteria.compareTo(dst)==0) {
+                ady.add(arista);
+                
+            }
+        }
+        return ady;
     }
 
     @Override
     public boolean esConexo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'esConexo'");
+       int size= vertices.size();
+       if(size==0){
+        return false;
+       }
+       Set<V> visitados= new HashSet<>();
+       for(V vertex: vertices){
+        esConexoAux(vertex,visitados);
+        if (size!= visitados.size()) {
+            return false; 
+            }
+        }
+        return true;
     }
+
+    private void esConexoAux(V vertice, Set<V> visitados){
+        if (visitados.contains(vertice)) {
+            return;
+        }
+        visitados.add(vertice);
+        for(Edge<V,D> arista:adyacencias((construirComparable(vertice)))){
+            esConexoAux(arista.target(), visitados);
+        }
+    }
+       
+    
 
     @Override
     public void vaciar() {
@@ -112,8 +175,37 @@ public class UndirectedGraph<V,D> implements IUndirectedGraph<V,D>{
 
     @Override
     public boolean tieneCiclos() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'tieneCiclos'");
+        Set<V> visitados= new HashSet<>();
+        for(V vertex: vertices){
+            if (!visitados.contains(vertex)) {
+                if (tieneCiclosAux(vertex,visitados,null)) {
+                    return true;
+                }
+            
+            }
+        }
+        return false;
+    }
+
+    public boolean tieneCiclosAux(V nodo, Set<V> visitados, V padre){
+        visitados.add(nodo);
+        for(Edge<V,D> edge: adyacencias(construirComparable(nodo))){
+            V vecino;
+            if (edge.source().equals(nodo)) {
+                vecino= edge.target();
+            }
+            else{
+                vecino=edge.source();
+            }
+            if (!visitados.contains(vecino)) {
+                if (tieneCiclosAux(vecino, visitados, nodo)) {
+                    return true;
+                }
+            }else if (!vecino.equals(padre)) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }
