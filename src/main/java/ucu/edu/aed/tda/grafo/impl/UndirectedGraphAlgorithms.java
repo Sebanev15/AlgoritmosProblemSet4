@@ -130,7 +130,7 @@ public class UndirectedGraphAlgorithms implements IUndirectedGraphAlgorithm{
         }
     }
 
-    <V, D> List<V> puntosDeArticulacion(IGraph<V, D> grafo){
+    public <V, D> List<V> puntosDeArticulacion(IGraph<V, D> grafo){
         Map<V, VertexJointPoint<V,D>> verticesPuntoArticulacion = new HashMap<>();
         for(V v : grafo.vertices()) {
             HashSet<Edge<V,D>> ady = new HashSet<>(grafo.adyacencias(grafo.construirComparable(v)));
@@ -145,7 +145,6 @@ public class UndirectedGraphAlgorithms implements IUndirectedGraphAlgorithm{
                 verticePuntoArticulacion.puntosArticulacion(puntos, count, verticesPuntoArticulacion);
             }
         }
-
         return puntos;
     }
 }
