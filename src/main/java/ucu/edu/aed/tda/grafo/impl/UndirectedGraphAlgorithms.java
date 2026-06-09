@@ -1,14 +1,11 @@
 package ucu.edu.aed.tda.grafo.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import ucu.edu.aed.tda.grafo.IUndirectedGraph;
 import ucu.edu.aed.tda.grafo.IUndirectedGraphAlgorithm;
+import ucu.edu.aed.tda.grafo.model.IGraph;
 import ucu.edu.aed.tda.grafo.model.edge.Edge;
 import ucu.edu.aed.tda.grafo.model.edge.WeightedEdge;
 
@@ -110,8 +107,45 @@ public class UndirectedGraphAlgorithms implements IUndirectedGraphAlgorithm{
 
     @Override
     public <V, D> void bea(IUndirectedGraph<V, D> graph, Consumer<V> consumer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bea'");
+        HashSet<V> visitados = new HashSet<>();
+        Queue<V> cola = new LinkedList<>();
+
+        for(V vertice: graph.vertices()){
+            if(!visitados.contains(vertice)){
+                cola.add(vertice);
+                visitados.add(vertice);
+                while(!cola.isEmpty()){
+                    V actual = cola.poll();
+                    consumer.accept(actual);
+
+                    for(Edge<V,D> adyacenteArista : graph.adyacencias(graph.construirComparable(actual))){
+                        V adyacenteVertice = adyacenteArista.target();
+                        if(!visitados.contains(adyacenteVertice)){
+                            cola.add(adyacenteVertice);
+                            visitados.add(adyacenteVertice);
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    <V, D> List<V> puntosDeArticulacion(IGraph<V, D> grafo){
+        Map<V, VertexJointPoint<V,D>> verticesPuntoArticulacion = new HashMap<>();
+        for(V v : grafo.vertices()) {
+            HashSet<Edge<V,D>> ady = new HashSet<>(grafo.adyacencias(grafo.construirComparable(v)));
+            verticesPuntoArticulacion.put(v, new VertexJointPoint<>(v, ady));
+        }
+        LinkedList<V> puntos = new LinkedList<>();
+        int[] count = {0};
+
+        for (V v : grafo.vertices()) {
+            VertexJointPoint<V, D> verticePuntoArticulacion = verticesPuntoArticulacion.get(v);
+            if (!verticePuntoArticulacion.visitado) {
+                verticePuntoArticulacion.puntosArticulacion(puntos, count, verticesPuntoArticulacion);
+            }
+        }
+
+        return puntos;
+    }
 }
