@@ -3,6 +3,11 @@ import org.junit.jupiter.api.Test;
 import ucu.edu.aed.tda.grafo.impl.UndirectedGraph;
 import ucu.edu.aed.tda.grafo.impl.UndirectedGraphAlgorithms;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import static org.junit.jupiter.api.Assertions.*;
 public class UndirectedGraphAlgorithmsTest {
     UndirectedGraph<String, Integer> g = new UndirectedGraph<>();
@@ -20,14 +25,14 @@ public class UndirectedGraphAlgorithmsTest {
     }
 
     @Test
-    public void puntosArticulacionInTwoVerticesGraphTest(){
+    public void puntosArticulacionInTwoVertexGraphTest(){
         g.agregarVertice("A");
         g.agregarVertice("B");
         assertTrue(algorithms.puntosDeArticulacion(g).isEmpty());
     }
 
     @Test
-    public void puntosArticulacionInThreeVerticesGraphTest() {
+    public void puntosArticulacionInThreeVertexGraphTest() {
         g.agregarVertice("A");
         g.agregarVertice("B");
         g.agregarVertice("C");
@@ -56,7 +61,7 @@ public class UndirectedGraphAlgorithmsTest {
     }
 
     @Test
-    public void puntosArticulacionInCiclicGraphTest(){
+    public void puntosArticulacionInCyclicalGraphTest(){
         g.agregarVertice("A");
         g.agregarVertice("B");
         g.agregarVertice("C");
@@ -98,5 +103,57 @@ public class UndirectedGraphAlgorithmsTest {
         assertEquals(2, algorithms.puntosDeArticulacion(g).size());
         assertTrue(algorithms.puntosDeArticulacion(g).contains("B"));
         assertTrue(algorithms.puntosDeArticulacion(g).contains("D"));
+    }
+
+    @Test
+    public void busquedaEnAmplitudInEmptyGraphTest(){
+        LinkedList<String> resultado = new LinkedList<>();
+        algorithms.bea(g, (x -> {
+            resultado.add(x);
+        }));
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    public void busquedaEnAmplitudInSingleVertexGraphTest(){
+        g.agregarVertice("A");
+        LinkedList<String> resultado = new LinkedList<>();
+        algorithms.bea(g, (x -> {
+            resultado.add(x);
+        }));
+        assertEquals(1, resultado.size());
+        assertTrue(resultado.contains("A"));
+    }
+
+    @Test
+    public void busquedaEnAmplitudInThreeVertexGraphTest(){
+        g.agregarVertice("A");
+        g.agregarVertice("B");
+        g.agregarVertice("C");
+        g.agregarArista("A", "B", 1);
+        g.agregarArista("B", "C", 1);
+        List<String> resultado = new ArrayList<>();
+        algorithms.bea(g, (x -> {
+            resultado.add(x);
+        }));
+        assertEquals(3, resultado.size());
+        assertTrue(resultado.indexOf("A") < resultado.indexOf("B"));
+        assertTrue(resultado.indexOf("B") < resultado.indexOf("C"));
+    }
+
+    @Test
+    public void busquedaEnAmplitudInCyclicalGraphTest(){
+        g.agregarVertice("A");
+        g.agregarVertice("B");
+        g.agregarVertice("C");
+        g.agregarArista("A", "B", 1);
+        g.agregarArista("B", "C", 1);
+        g.agregarArista("C", "A", 1);
+        List<String> resultado = new ArrayList<>();
+        algorithms.bea(g, (x -> {
+            resultado.add(x);
+        }));
+        assertEquals(3, resultado.size());
+
     }
 }
