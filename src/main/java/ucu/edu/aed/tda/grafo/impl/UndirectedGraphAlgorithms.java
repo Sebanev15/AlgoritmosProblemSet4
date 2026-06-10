@@ -147,4 +147,40 @@ public class UndirectedGraphAlgorithms implements IUndirectedGraphAlgorithm{
         }
         return puntos;
     }
+    public int numBacon(IUndirectedGraph<String, String> grafo , String actor){
+        String destino= grafo.buscarVertice(grafo.construirComparable(actor));
+        String kevin= grafo.buscarVertice(grafo.construirComparable("Kevin_Bacon"));
+
+        if(destino==null || kevin== null){
+            return -1; // no existe nadie
+        }
+
+        List<String> lista =new LinkedList<>();
+        Map<String, Integer> distancias= new HashMap<>();
+        Set<String> visitados= new HashSet<>();
+
+        lista.add(kevin);
+        distancias.put(kevin, 0);
+        visitados.add(kevin);
+
+         while (!lista.isEmpty()) {
+            String actual = lista.remove(0);
+
+            if (actual.equals(destino)) {
+                return distancias.get(actual);   // num de bacon encontrado
+            }
+
+            for (Edge<String, String> e : grafo.adyacencias(grafo.construirComparable(actual))) {
+                String vecino = actual.equals(e.source()) ? e.target() : e.source();
+
+                if (!visitados.contains(vecino)) {
+                    visitados.add(vecino);
+                    distancias.put(vecino, distancias.get(actual) + 1);
+                    lista.add(vecino);
+                }
+            }
+        }
+
+        return -1; // no hay camino a Kevin Bacon
+    }
 }
